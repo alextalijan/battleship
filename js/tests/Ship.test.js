@@ -16,11 +16,6 @@ describe('Number of hits', () => {
   it('Shows the number of hits as 0 when ship is created', () => {
     expect(testShip.hits).toBe(0);
   });
-
-  it('Increases hits by 1 when the ship has been hit', () => {
-    hitMock(testShip);
-    expect(testShip.hits).toBe(1);
-  });
 });
 
 describe('Has it been sunk', () => {
@@ -34,5 +29,13 @@ describe('Has it been sunk', () => {
     hitMock(testShip);
     hitMock(testShip);
     expect(testShip.isSunk).toBe(true);
+  });
+});
+
+describe('Ship being hit', () => {
+  const testShip = new Ship(4);
+  it('Increases hits by 1 when the ship has been hit', () => {
+    testShip.hit();
+    expect(testShip.hits).toBe(1);
   });
 });
