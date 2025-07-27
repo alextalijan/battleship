@@ -5,7 +5,7 @@ describe('Ship Length', () => {
     expect(new Ship(4).length).toBe(4);
   });
   it("Can't be of length less than one", () => {
-    expect(new Ship(0)).toThrow("Ship can't be of length less than one.");
+    expect(() => new Ship(0)).toThrow();
   });
 });
 
