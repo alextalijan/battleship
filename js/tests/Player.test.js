@@ -9,7 +9,7 @@ describe('Types of players', () => {
   });
   it('Rejects to create any other player', () => {
     expect(() => new Player('fake').type).toThrow(
-      'You can only chose "real" or "computer" players.'
+      'You can only choose "real" or "computer" players.'
     );
   });
 });
