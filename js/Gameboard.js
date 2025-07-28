@@ -9,6 +9,8 @@ class Gameboard {
       this.board[i] = new Array(10);
       this.guessingBoard[i] = new Array(10);
     }
+
+    this.ships = [];
   }
 
   placeShip(length, startingPoint, direction = 'horizontal') {
@@ -49,6 +51,8 @@ class Gameboard {
         length -= 1;
       }
     }
+
+    this.ships.push(ship);
   }
 
   #areThereShips(length, startingPoint, direction) {
@@ -71,12 +75,27 @@ class Gameboard {
     return false;
   }
 
-  receiveAttack(coordinates) {
+  receiveAttack(coordinates, oppboard) {
     const target = this.board[coordinates[0]][coordinates[1]];
     if (target instanceof Ship) {
       target.hit();
+      if (target.isSunk) {
+        this.ships.splice(this.ships.indexOf(target), 1);
+        if (this.isGameOver()) {
+          // TODO: do something when the game is over
+        }
+      }
+
+      oppboard.guessingBoard[coordinates[0]][coordinates[1]] = true;
       return true;
     }
+
+    oppboard.guessingBoard[coordinates[0]][coordinates[1]] = false;
+    return false;
+  }
+
+  isGameOver() {
+    if (this.ships.length < 1) return true;
 
     return false;
   }
