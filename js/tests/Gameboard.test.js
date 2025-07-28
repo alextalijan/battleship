@@ -58,3 +58,15 @@ describe('Receiving Attacks', () => {
     expect(testBoard.receiveAttack([0, 4])).toBe(false);
   });
 });
+
+describe('Checking if game is over', () => {
+  const testBoard = new Gameboard();
+  testBoard.placeShip(1, [0, 0]);
+  it('Returns false when there are still ships to be hit', () => {
+    expect(testBoard.isGameOver()).toBe(false);
+  });
+  it('Returns true when all the ships have been sunk', () => {
+    expect(testBoard.receiveAttack([0, 0]));
+    expect(testBoard.isGameOver()).toBe(true);
+  });
+});
