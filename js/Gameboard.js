@@ -10,8 +10,6 @@ class Gameboard {
       this.board[i] = new Array(10);
       this.guessingBoard[i] = new Array(10);
     }
-
-    this.ships = 5;
   }
 
   placeShip(length, startingPoint, direction = 'horizontal') {
@@ -52,8 +50,6 @@ class Gameboard {
         length -= 1;
       }
     }
-
-    this.ships.push(ship);
   }
 
   #areThereShips(length, startingPoint, direction) {
