@@ -1,4 +1,5 @@
 import Gameboard from '../Gameboard.js';
+import Ship from '../Ship.js';
 
 describe('Initializes Gameboard', () => {
   it('Gives an empty board when created', () => {
@@ -42,5 +43,19 @@ describe('Placing ships', () => {
     expect(() => testBoard.placeShip(3, [5, 4])).toThrow(
       'Cannot place a ship over another one.'
     );
+  });
+});
+
+describe('Receiving Attacks', () => {
+  const testBoard = new Gameboard();
+  testBoard.placeShip(4, [0, 0]);
+  it('Returns true if the ship has been hit', () => {
+    expect(() => testBoard.receiveAttack([0, 0])).toBe(true);
+  });
+  it('Increases the number of hits a ship has', () => {
+    expect(testBoard.board[0][0].hits).toBe(1);
+  });
+  it('Returns false if no ship has been hit', () => {
+    expect(() => testBoard.receiveAttack([0, 4])).toBe(false);
   });
 });
