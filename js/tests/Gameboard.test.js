@@ -33,4 +33,14 @@ describe('Placing ships', () => {
       "Can't place a ship out of bounds."
     );
   });
+  it("Can't place a ship of length that surpasses the board", () => {
+    expect(() => testBoard.placeShip(4, [0, 7])).toThrow(
+      'This ship surpasses the board and cannot be placed.'
+    );
+  });
+  it("Can't place a ship over another ship", () => {
+    expect(() => testBoard.placeShip(3, [5, 4])).toThrow(
+      'Cannot place a ship over another one.'
+    );
+  });
 });
