@@ -70,6 +70,16 @@ class Gameboard {
 
     return false;
   }
+
+  receiveAttack(coordinates) {
+    const target = this.board[coordinates[0]][coordinates[1]];
+    if (target instanceof Ship) {
+      target.hit();
+      return true;
+    }
+
+    return false;
+  }
 }
 
 export default Gameboard;
