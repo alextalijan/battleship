@@ -11,7 +11,7 @@ class Gameboard {
       this.guessingBoard[i] = new Array(10);
     }
 
-    this.ships = [];
+    this.ships = 5;
   }
 
   placeShip(length, startingPoint, direction = 'horizontal') {
@@ -81,7 +81,7 @@ class Gameboard {
     if (target instanceof Ship) {
       target.hit();
       if (target.isSunk) {
-        this.ships.splice(this.ships.indexOf(target), 1);
+        this.ships -= 1;
         if (this.isGameOver()) {
           PubSub.publish('gameOver');
           return;
@@ -97,7 +97,7 @@ class Gameboard {
   }
 
   isGameOver() {
-    if (this.ships.length < 1) return true;
+    if (this.ships < 1) return true;
 
     return false;
   }
