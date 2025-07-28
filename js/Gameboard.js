@@ -1,4 +1,5 @@
 import Ship from './Ship.js';
+import PubSub from './PubSub.js';
 
 class Gameboard {
   constructor() {
@@ -82,7 +83,8 @@ class Gameboard {
       if (target.isSunk) {
         this.ships.splice(this.ships.indexOf(target), 1);
         if (this.isGameOver()) {
-          // TODO: do something when the game is over
+          PubSub.publish('gameOver');
+          return;
         }
       }
 
