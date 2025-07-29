@@ -3,37 +3,63 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="./js/index.js"></script>
     <title>BattleShip</title>
   </head>
   <body>
     <h1>BattleShip</h1>
-    <button type="button">Start Game</button>
-    <dialog class="startGameModal">
-      <h2>Start Game</h2>
-      <div>
-        <input type="radio" id="playerOne" name="playerOne" value="real" />
-        <label for="playerOne">Player</label>
-      </div>
-      <div>
-        <input
-          type="radio"
-          id="computerOne"
-          name="playerOne"
-          value="computer"
-        />
-        <label for="playerOne">Computer</label>
-      </div>
-      <div>
-        <input type="radio" id="playerTwo" name="playerTwo" value="real" />
-        <label for="playerTwo">Player</label>
-      </div>
-      <div>
-        <input type="radio" id="playerTwo" name="playerTwo" value="computer" />
-        <label for="playerTwo">Computer</label>
-      </div>
-      <div>
-        <button type="button">Start</button>
-      </div>
+    <button type="button" class="create-new-game-btn">New Game</button>
+    <dialog class="new-game-modal">
+      <form action="" novalidate>
+        <h2>New Game</h2>
+        <fieldset>
+          <legend>Player One</legend>
+          <div>
+            <input
+              type="radio"
+              id="playerOne"
+              name="playerOne"
+              value="real"
+              required
+            />
+            <label for="playerOne">Player</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="computerOne"
+              name="playerOne"
+              value="computer"
+            />
+            <label for="computerOne">Computer</label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Player Two</legend>
+          <div>
+            <input
+              type="radio"
+              id="playerTwo"
+              name="playerTwo"
+              value="real"
+              required
+            />
+            <label for="playerTwo">Player</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="computerTwo"
+              name="playerTwo"
+              value="computer"
+            />
+            <label for="computerTwo">Computer</label>
+          </div>
+        </fieldset>
+        <div>
+          <button type="submit" class="start-game-btn">Start</button>
+        </div>
+      </form>
     </dialog>
     <div class="game-screen"></div>
   </body>
