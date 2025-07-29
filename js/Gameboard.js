@@ -78,23 +78,21 @@ class Gameboard {
     return false;
   }
 
-  receiveAttack(coordinates, oppBoard) {
+  receiveAttack(coordinates) {
     const target = this.board[coordinates[0]][coordinates[1]];
     if (target instanceof Ship) {
       target.hit();
       if (target.isSunk) {
         this.ships -= 1;
         if (this.isGameOver()) {
-          PubSub.publish('gameOver', oppBoard);
+          PubSub.publish('gameOver', this.board);
           return;
         }
       }
 
-      oppBoard.guessingBoard[coordinates[0]][coordinates[1]] = true;
       return true;
     }
 
-    oppBoard.guessingBoard[coordinates[0]][coordinates[1]] = false;
     return false;
   }
 
