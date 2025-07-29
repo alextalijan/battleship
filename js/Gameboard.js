@@ -26,14 +26,17 @@ class Gameboard {
 
     const ship = new Ship(length);
     if (direction === 'horizontal') {
+      // Check if size of the ship surpasses the board from the starting point
       if (startingPoint[1] + length > 10) {
         throw new Error('This ship surpasses the board and cannot be placed.');
       }
 
+      // If there are already ships that this one would overlap, stop it from happening
       if (this.#areThereShips(length, startingPoint, direction)) {
         throw new Error('Cannot place a ship over another one.');
       }
 
+      // Place the ship in appropriate spots
       for (let j = startingPoint[1]; length > 0; j += 1) {
         this.board[startingPoint[0]][j] = ship;
         length -= 1;
@@ -58,6 +61,7 @@ class Gameboard {
     }
   }
 
+  // Go through all the spots a ship could be at, and return true if there is one
   #areThereShips(length, startingPoint, direction) {
     if (direction === 'horizontal') {
       for (let j = startingPoint[1]; length > 0; j += 1) {
@@ -78,6 +82,7 @@ class Gameboard {
     return false;
   }
 
+  // This function returns true if there was a hit, otherwise false
   receiveAttack(coordinates) {
     const target = this.board[coordinates[0]][coordinates[1]];
     if (target instanceof Ship) {

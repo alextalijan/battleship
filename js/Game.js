@@ -1,7 +1,9 @@
 const Game = function thatRepresentsTheWholeGame(players) {
+  // Loop through all players to fill boards with ships
   for (const player of players) {
     const shipLengths = [5, 4, 3, 3, 2];
 
+    // Keep placing ships until there are 5
     while (player.gameboard.ships < 5) {
       if (player.type === 'real') {
         let placement = prompt(
@@ -20,7 +22,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
             move.direction
           );
         } catch (error) {
-          console.log(error.message);
+          alert(error.message);
         }
       } else {
         // If player is a computer, randomly generate its ships
@@ -41,6 +43,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
     }
   }
 
+  // Start the game and changing turns
   let turnPlayer = players.unshift();
   while (!turnPlayer.gameboard.isGameOver) {
     // Get the player back in queue again
@@ -52,6 +55,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
       );
 
       const move = userInput.split(',');
+      // Check if the move input's valid
       if (
         move.length === 2 &&
         typeof move[0] === 'number' &&
