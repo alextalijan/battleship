@@ -8,6 +8,33 @@
   <body>
     <h1>BattleShip</h1>
     <button type="button">Start Game</button>
+    <dialog class="startGameModal">
+      <h2>Start Game</h2>
+      <div>
+        <input type="radio" id="playerOne" name="playerOne" value="real" />
+        <label for="playerOne">Player</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          id="computerOne"
+          name="playerOne"
+          value="computer"
+        />
+        <label for="playerOne">Computer</label>
+      </div>
+      <div>
+        <input type="radio" id="playerTwo" name="playerTwo" value="real" />
+        <label for="playerTwo">Player</label>
+      </div>
+      <div>
+        <input type="radio" id="playerTwo" name="playerTwo" value="computer" />
+        <label for="playerTwo">Computer</label>
+      </div>
+      <div>
+        <button type="button">Start</button>
+      </div>
+    </dialog>
     <div class="game-screen"></div>
   </body>
 </html>
