@@ -10,6 +10,8 @@ class Gameboard {
       this.board[i] = new Array(10);
       this.guessingBoard[i] = new Array(10);
     }
+
+    this.ships = 0;
   }
 
   placeShip(length, startingPoint, direction = 'horizontal') {
@@ -36,6 +38,8 @@ class Gameboard {
         this.board[startingPoint[0]][j] = ship;
         length -= 1;
       }
+
+      this.ships += 1;
     } else if (direction === 'vertical') {
       if (startingPoint[0] + length > 10) {
         throw new Error('This ship is too big to fit on the board.');
@@ -49,6 +53,8 @@ class Gameboard {
         this.board[i][startingPoint[1]] = ship;
         length -= 1;
       }
+
+      this.ships += 1;
     }
   }
 
