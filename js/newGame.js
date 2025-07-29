@@ -1,4 +1,5 @@
 import Player from './Player.js';
+import Game from './Game.js';
 
 const newGame = function thatCreatesANewGame() {
   const newGameModal = document.querySelector('.new-game-modal');
@@ -23,6 +24,7 @@ const newGame = function thatCreatesANewGame() {
       // Create both players and start their game
       const playerOne = new Player(playerOneType.value);
       const playerTwo = new Player(playerTwoType.value);
+      Game([playerOne, playerTwo]);
     }
   });
 };
