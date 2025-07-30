@@ -79,3 +79,5 @@ const Game = function thatRepresentsTheWholeGame(players) {
     }
   }
 };
+
+export default Game;
