@@ -1,3 +1,5 @@
+import PubSub from './PubSub.js';
+
 const Game = function thatRepresentsTheWholeGame(players) {
   // Loop through all players to fill boards with ships
   for (const player of players) {
@@ -21,6 +23,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
             move.startingPoint,
             move.direction
           );
+          PubSub.publish('boardChanged', player.gameboard);
         } catch (error) {
           alert(error.message);
         }
