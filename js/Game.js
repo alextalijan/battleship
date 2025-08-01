@@ -15,7 +15,9 @@ const Game = function thatRepresentsTheWholeGame(players) {
 
         try {
           const move = {
-            startingPoint: placement[0].split(','),
+            startingPoint: placement[0]
+              .split(',')
+              .map((stringNumber) => Number(stringNumber)),
             direction: placement[1],
           };
           player.gameboard.placeShip(
@@ -23,7 +25,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
             move.startingPoint,
             move.direction
           );
-          PubSub.publish('boardChanged', player.gameboard);
+          PubSub.publish('boardChanged', player.gameboard.board);
         } catch (error) {
           alert(error.message);
         }
@@ -48,7 +50,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
 
   // Start the game and changing turns
   let turnPlayer = players.unshift();
-  while (!turnPlayer.gameboard.isGameOver) {
+  while (!turnPlayer.gameboard.isGameOver()) {
     // Get the player back in queue again
     players.push(turnPlayer);
 
