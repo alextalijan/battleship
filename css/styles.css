@@ -23,18 +23,17 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  align-items: center;
 }
 
 .page-title {
   font-size: 3rem;
-  text-align: center;
   margin-top: 2rem;
 }
 
 .create-new-game-btn {
   padding: 0.3em;
   font-size: 1.5rem;
-  align-self: center;
   cursor: pointer;
 }
 
@@ -88,4 +87,21 @@ body {
   margin-top: 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
+}
+
+.game-screen {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  height: 600px;
+  width: 600px;
+}
+
+.game-screen > div {
+  border: 1px solid black;
+  font-size: 3rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
