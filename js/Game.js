@@ -49,7 +49,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
   }
 
   // Start the game and changing turns
-  let turnPlayer = players.unshift();
+  let turnPlayer = players.shift();
   while (!turnPlayer.gameboard.isGameOver()) {
     // Get the player back in queue again
     players.push(turnPlayer);
@@ -59,7 +59,10 @@ const Game = function thatRepresentsTheWholeGame(players) {
         'Which spot do you want to attack? E.g. 5,5 -> you would attack 6th row, 6th column.'
       );
 
-      const move = userInput.split(',');
+      const move = userInput
+        .split(',')
+        .map((stringNumber) => Number(stringNumber));
+
       // Check if the move input's valid
       if (
         move.length === 2 &&
@@ -68,13 +71,15 @@ const Game = function thatRepresentsTheWholeGame(players) {
       ) {
         // Only if the move hasn't been made
         if (
-          ![true, false].includes(turnPlayer.guessingBoard[move[0]][move[1]])
+          ![true, false].includes(
+            turnPlayer.gameboard.guessingBoard[move[0]][move[1]]
+          )
         ) {
           // Make an attack on the opponents ship
-          turnPlayer.guessingBoard[move[0]][move[1]] =
+          turnPlayer.gameboard.guessingBoard[move[0]][move[1]] =
             players[0].gameboard.receiveAttack(move);
 
-          turnPlayer = players.unshift();
+          turnPlayer = players.shift();
         } else {
           alert('That move has already been made. Please choose another.');
         }
