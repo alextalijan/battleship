@@ -1,9 +1,7 @@
 import Ship from './Ship.js';
-import PubSub from './PubSub.js';
 
 const displayController = (function thatControlsWhatIsBeingShown() {
   const screen = document.querySelector('.game-screen');
-  PubSub.subscribe('boardChanged');
 
   const render = function thatRendersTheBoard(board) {
     screen.innerHTML = '';
@@ -25,8 +23,6 @@ const displayController = (function thatControlsWhatIsBeingShown() {
       }
     }
   };
-
-  PubSub.subscribe('boardChanged', render);
 
   return { render };
 })();
