@@ -78,6 +78,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
           // Make an attack on the opponents ship
           turnPlayer.gameboard.guessingBoard[move[0]][move[1]] =
             players[0].gameboard.receiveAttack(move);
+          PubSub.publish('boardChanged', turnPlayer.gameboard.guessingBoard);
 
           turnPlayer = players.shift();
         } else {
@@ -85,6 +86,28 @@ const Game = function thatRepresentsTheWholeGame(players) {
         }
       } else {
         alert('Please input the move in a valid format -> x,y');
+      }
+    } else {
+      // Else the player is computer, so generate guess randomly until it's valid
+      while (true) {
+        const randomMove = [
+          Math.floor(Math.random() * 10),
+          Math.floor(Math.random() * 10),
+        ];
+
+        // If the move hasn't been made, make it
+        if (
+          ![true, false].includes(
+            turnPlayer.gameboard.guessingBoard[randomMove[0]][randomMove[1]]
+          )
+        ) {
+          // Make an attack on the opponents ship
+          turnPlayer.gameboard.guessingBoard[randomMove[0]][randomMove[1]] =
+            players[0].gameboard.receiveAttack(randomMove);
+
+          turnPlayer = players.shift();
+          break;
+        }
       }
     }
   }
