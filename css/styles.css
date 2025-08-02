@@ -47,6 +47,11 @@ body {
   border-radius: 0.5rem;
 }
 
+.game-announcer {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
 .new-game-modal {
   position: absolute;
   left: 50%;

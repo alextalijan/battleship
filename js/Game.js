@@ -1,3 +1,4 @@
+import announce from './announce.js';
 import PubSub from './PubSub.js';
 
 const Game = function thatRepresentsTheWholeGame(players) {
@@ -27,7 +28,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
           );
           PubSub.publish('boardChanged', player.gameboard.board);
         } catch (error) {
-          alert(error.message);
+          console.log(error.message);
         }
       } else {
         // If player is a computer, randomly generate its ships
@@ -55,7 +56,7 @@ const Game = function thatRepresentsTheWholeGame(players) {
     players.push(turnPlayer);
 
     if (turnPlayer.type === 'real') {
-      const userInput = prompt(
+      announce(
         'Which spot do you want to attack? E.g. 5,5 -> you would attack 6th row, 6th column.'
       );
 
@@ -82,10 +83,10 @@ const Game = function thatRepresentsTheWholeGame(players) {
 
           turnPlayer = players.shift();
         } else {
-          alert('That move has already been made. Please choose another.');
+          announce('That move has already been made. Please choose another.');
         }
       } else {
-        alert('Please input the move in a valid format -> x,y');
+        announce('Please input the move in a valid format -> x,y');
       }
     } else {
       // Else the player is computer, so generate guess randomly until it's valid
