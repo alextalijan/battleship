@@ -17,9 +17,9 @@ class Gameboard {
   placeShip(length, startingPoint, direction = 'horizontal') {
     if (
       startingPoint[0] < 0 ||
-      startingPoint[0] > 9 ||
+      startingPoint[0] > this.board.length - 1 ||
       startingPoint[1] < 0 ||
-      startingPoint[1] > 9
+      startingPoint[1] > this.board[0].length - 1
     ) {
       throw new Error("Can't place a ship out of bounds.");
     }
@@ -27,7 +27,7 @@ class Gameboard {
     const ship = new Ship(length);
     if (direction === 'horizontal') {
       // Check if size of the ship surpasses the board from the starting point
-      if (startingPoint[1] + length > 10) {
+      if (startingPoint[1] + length > this.board[0].length) {
         throw new Error('This ship surpasses the board and cannot be placed.');
       }
 
@@ -44,7 +44,7 @@ class Gameboard {
 
       this.ships += 1;
     } else if (direction === 'vertical') {
-      if (startingPoint[0] + length > 10) {
+      if (startingPoint[0] + length > this.board.length) {
         throw new Error('This ship is too big to fit on the board.');
       }
 
