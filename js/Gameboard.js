@@ -14,7 +14,7 @@ class Gameboard {
     this.ships = 0;
   }
 
-  placeShip(length, startingPoint, direction = 'horizontal') {
+  placeShip(length, startingPoint, direction) {
     if (
       startingPoint[0] < 0 ||
       startingPoint[0] > this.board.length - 1 ||
@@ -24,6 +24,16 @@ class Gameboard {
       throw new Error("Can't place a ship out of bounds.");
     }
 
+    // If direction is anything other than horizontal or vertical, stop the placement from happening
+    if (direction !== 'horizontal' && direction !== 'vertical') {
+      throw new Error('Ships can only be placed horizontally and vertically.');
+    }
+
+    // If there are already ships that this one would overlap, stop it from happening
+    if (this.#areThereShips(length, startingPoint, direction)) {
+      throw new Error('Cannot place a ship over another one.');
+    }
+
     const ship = new Ship(length);
     if (direction === 'horizontal') {
       // Check if size of the ship surpasses the board from the starting point
@@ -31,34 +41,23 @@ class Gameboard {
         throw new Error('This ship surpasses the board and cannot be placed.');
       }
 
-      // If there are already ships that this one would overlap, stop it from happening
-      if (this.#areThereShips(length, startingPoint, direction)) {
-        throw new Error('Cannot place a ship over another one.');
-      }
-
       // Place the ship in appropriate spots
       for (let j = startingPoint[1]; length > 0; j += 1) {
         this.board[startingPoint[0]][j] = ship;
         length -= 1;
       }
-
-      this.ships += 1;
-    } else if (direction === 'vertical') {
+    } else {
       if (startingPoint[0] + length > this.board.length) {
         throw new Error('This ship is too big to fit on the board.');
-      }
-
-      if (this.#areThereShips(length, startingPoint, direction)) {
-        throw new Error('Cannot place a ship over another one.');
       }
 
       for (let i = startingPoint[0]; length > 0; i += 1) {
         this.board[i][startingPoint[1]] = ship;
         length -= 1;
       }
-
-      this.ships += 1;
     }
+
+    this.ships += 1;
   }
 
   // Go through all the spots a ship could be at, and return true if there is one
