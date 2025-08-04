@@ -2,13 +2,13 @@ import Ship from './Ship.js';
 import PubSub from './PubSub.js';
 
 class Gameboard {
-  constructor() {
-    this.board = new Array(10);
-    this.guessingBoard = new Array(10);
+  constructor(length) {
+    this.board = new Array(length);
+    this.guessingBoard = new Array(length);
 
-    for (let i = 0; i < 10; i += 1) {
-      this.board[i] = new Array(10);
-      this.guessingBoard[i] = new Array(10);
+    for (let i = 0; i < this.board.length; i += 1) {
+      this.board[i] = new Array(this.board.length);
+      this.guessingBoard[i] = new Array(this.board.length);
     }
 
     this.ships = 0;
@@ -67,6 +67,7 @@ class Gameboard {
         if (this.board[startingPoint[0]][j] !== undefined) {
           return true;
         }
+
         length -= 1;
       }
     } else {
@@ -74,6 +75,7 @@ class Gameboard {
         if (this.board[i][startingPoint[1]] !== undefined) {
           return true;
         }
+
         length -= 1;
       }
     }
