@@ -1,5 +1,4 @@
 import announce from './announce.js';
-import playRound from './playRound.js';
 import PubSub from './PubSub.js';
 
 const Game = (function thatControlsGameplay() {
@@ -15,14 +14,14 @@ const Game = (function thatControlsGameplay() {
           event.stopPropagation();
 
           const direction = prompt(
-            'How do you want to place the ship? horizontal / vertical'
+            'How do you want to place the ship? horizontal (h) / vertical (v)'
           );
 
           resolve({
             startingPoint: event.target.dataset.coordinates
               .split(',')
               .map((stringNumber) => Number(stringNumber)),
-            direction,
+            direction: direction === 'h' ? 'horizontal' : 'vertical',
           });
         },
         { once: true }
@@ -54,6 +53,7 @@ const Game = (function thatControlsGameplay() {
     // Empty current turns and add new players to it
     turns.length = 0;
     turns.push(...players);
+    PubSub.publish('boardChanged', turns[0].gameboard.board);
 
     // Loop through players to fill boards with ships
     for (const player of turns) {
@@ -63,6 +63,9 @@ const Game = (function thatControlsGameplay() {
       while (player.gameboard.ships < 5) {
         let move;
         if (player.type === 'real') {
+          announce(
+            `${player.name}, where do you want to place the ship of length ${shipLengths[player.gameboard.ships]}`
+          );
           move = await getShipPlacementClick();
         } else {
           // Else the player is a computer, so randomly choose their placement
@@ -82,6 +85,11 @@ const Game = (function thatControlsGameplay() {
             move.startingPoint,
             move.direction
           );
+
+          // Only if player is a real person, show the new rendered board
+          if (player.type === 'real') {
+            PubSub.publish('boardChanged', player.gameboard.board);
+          }
         } catch (error) {
           if (player.type === 'real') announce(error.message);
         }
@@ -96,10 +104,17 @@ const Game = (function thatControlsGameplay() {
 
     // Loop turns until the game is over
     while (!turnPlayer.gameboard.isGameOver()) {
+      PubSub.publish('boardChanged', turnPlayer.gameboard.guessingBoard);
+
       let move;
       if (turnPlayer.type === 'real') {
+        announce(`${turnPlayer.name}, which spot do you want to attack?`);
         move = await getPlayerGuess();
       } else {
+        announce('Computer is playing...');
+
+        // Create a fake wait to make the game more enjoyable
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         move = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
       }
 
@@ -108,6 +123,10 @@ const Game = (function thatControlsGameplay() {
         // The first element of the turns array now is the player whose ship we're attacking
         turnPlayer.gameboard.guessingBoard[move[0]][move[1]] =
           turns[0].gameboard.receiveAttack(move);
+
+        // Add the delay once more
+        PubSub.publish('boardChanged', turnPlayer.gameboard.guessingBoard);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         // Add turn player to the queue again
         turns.push(turnPlayer);
@@ -120,92 +139,5 @@ const Game = (function thatControlsGameplay() {
 
   return { newGame };
 })();
-
-const Game = function thatRepresentsTheWholeGame(players) {
-  window.playersQueue = players;
-
-  // // Loop through all players to fill boards with ships
-  // for (const player of window.playersQueue) {
-  //   const shipLengths = [5, 4, 3, 3, 2];
-
-  //   // Keep placing ships until there are 5
-  //   while (player.gameboard.ships < 5) {
-  //     if (player.type === 'real') {
-  //       let placement = prompt(
-  //         `Where to place the ${shipLengths[player.gameboard.ships]} lengthed ship? E.g. 0,5 vertical -> 1st row, 6th column, placed vertically.`
-  //       );
-  //       placement = placement.split(' ');
-
-  //       try {
-  //         const move = {
-  //           startingPoint: placement[0]
-  //             .split(',')
-  //             .map((stringNumber) => Number(stringNumber)),
-  //           direction: placement[1],
-  //         };
-  //         player.gameboard.placeShip(
-  //           shipLengths[player.gameboard.ships],
-  //           move.startingPoint,
-  //           move.direction
-  //         );
-  //         PubSub.publish('boardChanged', player.gameboard.board);
-  //       } catch (error) {
-  //         console.log(error.message);
-  //       }
-  //     } else {
-  //       // If player is a computer, randomly generate its ships
-  //       let i = 0;
-  //       while (i < 5) {
-  //         try {
-  //           player.gameboard.placeShip(
-  //             shipLengths[i],
-  //             [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)],
-  //             Math.random() < 0.5 ? 'horizontal' : 'vertical'
-  //           );
-  //           i += 1;
-  //         } catch (error) {
-  //           console.log(error.message);
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // Start the game and changing turns
-  let turnPlayer = window.playersQueue.shift();
-  const screen = document.querySelector('.game-screen');
-  if (turnPlayer.type === 'real') {
-    announce(
-      'Which spot do you want to attack? E.g. 5,5 -> you would attack 6th row, 6th column.'
-    );
-
-    screen.addEventListener(
-      'click',
-      playRound(turnPlayer, event.target.dataset.boardSpot)
-    );
-  } else {
-    // Else the player is computer, so generate guess randomly until it's valid
-    while (true) {
-      const randomMove = [
-        Math.floor(Math.random() * 10),
-        Math.floor(Math.random() * 10),
-      ];
-
-      // If the move hasn't been made, make it
-      if (
-        ![true, false].includes(
-          turnPlayer.gameboard.guessingBoard[randomMove[0]][randomMove[1]]
-        )
-      ) {
-        // Make an attack on the opponents ship
-        turnPlayer.gameboard.guessingBoard[randomMove[0]][randomMove[1]] =
-          window.playersQueue[0].gameboard.receiveAttack(randomMove);
-
-        turnPlayer = window.playersQueue.shift();
-        break;
-      }
-    }
-  }
-};
 
 export default Game;
