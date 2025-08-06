@@ -5,7 +5,9 @@ import PubSub from './PubSub.js';
 const Game = (function thatControlsGameplay() {
   const turns = [];
 
-  function __getShipPlacementClick__(boardElement) {
+  function getShipPlacementClick() {
+    const boardElement = document.querySelector('.game-screen');
+
     return new Promise((resolve) => {
       boardElement.addEventListener(
         'click',
@@ -28,6 +30,26 @@ const Game = (function thatControlsGameplay() {
     });
   }
 
+  function getPlayerGuess() {
+    const boardElement = document.querySelector('.game-screen');
+
+    return new Promise((resolve) => {
+      boardElement.addEventListener(
+        'click',
+        (event) => {
+          event.stopPropagation();
+
+          resolve(
+            event.target.dataset.coordinates
+              .split(',')
+              .map((stringNumber) => Number(stringNumber))
+          );
+        },
+        { once: true }
+      );
+    });
+  }
+
   const newGame = async function thatCreatesNewGame(players) {
     // Empty current turns and add new players to it
     turns.length = 0;
@@ -38,11 +60,10 @@ const Game = (function thatControlsGameplay() {
       const shipLengths = [5, 4, 3, 3, 2];
 
       // Keep placing ships until there are 5
-      const boardScreen = document.querySelector('.game-screen');
       while (player.gameboard.ships < 5) {
         let move;
         if (player.type === 'real') {
-          move = await __getShipPlacementClick__(boardScreen);
+          move = await getShipPlacementClick();
         } else {
           // Else the player is a computer, so randomly choose their placement
           move = {
@@ -66,9 +87,38 @@ const Game = (function thatControlsGameplay() {
         }
       }
     }
+
+    playGame();
   };
 
-  return { players, newGame };
+  const playGame = async function thatControlsFlowOfTheGame() {
+    let turnPlayer = turns.shift();
+
+    // Loop turns until the game is over
+    while (!turnPlayer.gameboard.isGameOver()) {
+      let move;
+      if (turnPlayer.type === 'real') {
+        move = await getPlayerGuess();
+      } else {
+        move = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+      }
+
+      // If the move hasn't already been made, make it
+      if (turnPlayer.gameboard.guessingBoard[move[0]][move[1]] === undefined) {
+        // The first element of the turns array now is the player whose ship we're attacking
+        turnPlayer.gameboard.guessingBoard[move[0]][move[1]] =
+          turns[0].gameboard.receiveAttack(move);
+
+        // Add turn player to the queue again
+        turns.push(turnPlayer);
+        turnPlayer = turns.shift();
+      }
+    }
+
+    announce(`The winner is ${turns[0].name}. Congrats!`);
+  };
+
+  return { newGame };
 })();
 
 const Game = function thatRepresentsTheWholeGame(players) {
