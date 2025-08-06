@@ -7,20 +7,20 @@ const displayController = (function thatControlsWhatIsBeingShown() {
     screen.innerHTML = '';
 
     for (const row of board) {
-      for (const spot of row) {
+      for (let i = 0; i < row.length; i += 1) {
         const block = document.createElement('div');
         let content = '';
-        if (spot instanceof Ship) {
+        if (row[i] instanceof Ship) {
           content = '🚢';
-        } else if (spot === true) {
+        } else if (row[i] === true) {
           content = '✅';
-        } else if (spot === false) {
+        } else if (row[i] === false) {
           content = '❌';
         }
 
         // Add relevant content to the block, as well as coordinates
         block.innerText = content;
-        block.dataset.coordinates = `${board.indexOf(row)},${row.indexOf(spot)}`;
+        block.dataset.coordinates = `${board.indexOf(row)},${i}`;
         screen.appendChild(block);
       }
     }
