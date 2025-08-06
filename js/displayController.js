@@ -18,7 +18,9 @@ const displayController = (function thatControlsWhatIsBeingShown() {
           content = '❌';
         }
 
+        // Add relevant content to the block, as well as coordinates
         block.innerText = content;
+        block.dataset.coordinates = `${board.indexOf(row)},${row.indexOf(spot)}`;
         screen.appendChild(block);
       }
     }
