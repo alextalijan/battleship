@@ -75,9 +75,6 @@ newGameBtn.addEventListener('click', () => {
       const playerOneName = document.querySelector('.playerOneNameInput');
       const playerTwoName = document.querySelector('.playerTwoNameInput');
 
-      newGameModal.close();
-      newGameForm.reset();
-
       // Create both players and start their game
       let playerOne, playerTwo;
       if (playerOneName) {
@@ -89,8 +86,11 @@ newGameBtn.addEventListener('click', () => {
       if (playerTwoName) {
         playerTwo = new Player(playerTwoType.value, playerTwoName.value);
       } else {
-        playerOne = new Player(playerTwoType.value);
+        playerTwo = new Player(playerTwoType.value);
       }
+
+      newGameModal.close();
+      newGameForm.reset();
 
       Game.newGame([playerOne, playerTwo]);
     }
