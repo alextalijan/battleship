@@ -8,7 +8,6 @@ const Game = (function thatControlsGameplay() {
     const boardElement = document.querySelector('.game-screen');
 
     return new Promise((resolve) => {
-      // TODO: stop adding event listeners for every new game, and remove them after adding all ships
       boardElement.onclick = (event) => {
         event.stopPropagation();
 
@@ -30,7 +29,6 @@ const Game = (function thatControlsGameplay() {
     const boardElement = document.querySelector('.game-screen');
 
     return new Promise((resolve) => {
-      // TODO: make sure this only gets added once, as well as delete after the game is over
       boardElement.onclick = (event) => {
         event.stopPropagation();
 
@@ -43,7 +41,23 @@ const Game = (function thatControlsGameplay() {
     });
   }
 
+  function delay(ms, gameToken) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (gameToken === currentGameToken) {
+          resolve();
+        }
+      }, ms);
+    });
+  }
+
+  // Used for tracking if a move is from a previous game and should be ignored
+  let currentGameToken = 0;
+
   const newGame = async function thatCreatesNewGame(players) {
+    // Increase the gameToken by one to announce a new game
+    currentGameToken += 1;
+
     // Empty current turns and add new players to it
     turns.length = 0;
     turns.push(...players);
@@ -108,7 +122,9 @@ const Game = (function thatControlsGameplay() {
         announce('Computer is playing...');
 
         // Create a fake wait to make the game more enjoyable
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Forget about it if the game has been reset
+        const token = currentGameToken;
+        await delay(1000, token);
         move = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
       }
 
@@ -120,7 +136,8 @@ const Game = (function thatControlsGameplay() {
 
         // Add the delay once more
         PubSub.publish('boardChanged', turnPlayer.gameboard.guessingBoard);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const token = currentGameToken;
+        await delay(2000, token);
 
         // Add turn player to the queue again
         turns.push(turnPlayer);
