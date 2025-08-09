@@ -8,24 +8,21 @@ const Game = (function thatControlsGameplay() {
     const boardElement = document.querySelector('.game-screen');
 
     return new Promise((resolve) => {
-      boardElement.addEventListener(
-        'click',
-        (event) => {
-          event.stopPropagation();
+      // TODO: stop adding event listeners for every new game, and remove them after adding all ships
+      boardElement.onclick = (event) => {
+        event.stopPropagation();
 
-          const direction = prompt(
-            'How do you want to place the ship? horizontal (h) / vertical (v)'
-          );
+        const direction = prompt(
+          'How do you want to place the ship? horizontal (h) / vertical (v)'
+        );
 
-          resolve({
-            startingPoint: event.target.dataset.coordinates
-              .split(',')
-              .map((stringNumber) => Number(stringNumber)),
-            direction: direction === 'h' ? 'horizontal' : 'vertical',
-          });
-        },
-        { once: true }
-      );
+        resolve({
+          startingPoint: event.target.dataset.coordinates
+            .split(',')
+            .map((stringNumber) => Number(stringNumber)),
+          direction: direction === 'h' ? 'horizontal' : 'vertical',
+        });
+      };
     });
   }
 
@@ -33,19 +30,16 @@ const Game = (function thatControlsGameplay() {
     const boardElement = document.querySelector('.game-screen');
 
     return new Promise((resolve) => {
-      boardElement.addEventListener(
-        'click',
-        (event) => {
-          event.stopPropagation();
+      // TODO: make sure this only gets added once, as well as delete after the game is over
+      boardElement.onclick = (event) => {
+        event.stopPropagation();
 
-          resolve(
-            event.target.dataset.coordinates
-              .split(',')
-              .map((stringNumber) => Number(stringNumber))
-          );
-        },
-        { once: true }
-      );
+        resolve(
+          event.target.dataset.coordinates
+            .split(',')
+            .map((stringNumber) => Number(stringNumber))
+        );
+      };
     });
   }
 
@@ -53,10 +47,10 @@ const Game = (function thatControlsGameplay() {
     // Empty current turns and add new players to it
     turns.length = 0;
     turns.push(...players);
-    PubSub.publish('boardChanged', turns[0].gameboard.board);
 
     // Loop through players to fill boards with ships
     for (const player of turns) {
+      PubSub.publish('boardChanged', player.gameboard.board);
       const shipLengths = [5, 4, 3, 3, 2];
 
       // Keep placing ships until there are 5
