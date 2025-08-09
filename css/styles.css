@@ -84,6 +84,13 @@ body {
 
 .new-game-form > fieldset {
   padding: 0.5rem 1rem;
+  width: 80%;
+}
+
+/* This refers to the input field that shows up for player names */
+.new-game-form div > input[type='text'] {
+  padding: 0.2rem 0.4rem;
+  font-size: 1.2rem;
 }
 
 .start-game-btn {
