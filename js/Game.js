@@ -12,15 +12,22 @@ const Game = (function thatControlsGameplay() {
       boardElement.onclick = (event) => {
         event.stopPropagation();
 
-        const direction = prompt(
+        let direction = prompt(
           'How do you want to place the ship? horizontal (h) / vertical (v)'
         );
+
+        // Make sure the input of direction is proper
+        if (direction === 'horizontal' || direction === 'h') {
+          direction = 'horizontal';
+        } else if (direction === 'vertical' || direction === 'v') {
+          direction = 'vertical';
+        }
 
         resolve({
           startingPoint: event.target.dataset.coordinates
             .split(',')
             .map((stringNumber) => Number(stringNumber)),
-          direction: direction === 'h' ? 'horizontal' : 'vertical',
+          direction,
         });
       };
     });
