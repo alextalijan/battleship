@@ -11,9 +11,11 @@ const displayController = (function thatControlsWhatIsBeingShown() {
         const block = document.createElement('div');
         let content = '';
         if (row[i] instanceof Ship) {
-          content = '🚢';
-        } else if (row[i] === true) {
-          content = '✅';
+          if (row[i].isSunk) {
+            content = '✅';
+          } else {
+            content = '🚢';
+          }
         } else if (row[i] === false) {
           content = '❌';
         }

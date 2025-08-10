@@ -96,7 +96,7 @@ class Gameboard {
         );
       }
 
-      return true;
+      return target;
     }
 
     return false;
