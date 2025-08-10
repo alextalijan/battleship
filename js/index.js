@@ -1,3 +1,4 @@
+import announce from './announce.js';
 import displayController from './displayController.js';
 import Game from './Game.js';
 import Player from './Player.js';
@@ -54,7 +55,6 @@ newGameBtn.addEventListener('click', () => {
   newGameForm.onsubmit = (event) => {
     event.preventDefault();
 
-    // TODO: add support for capturing player name
     // Query the first player type if checked, otherwise capture the first one for validation message
     let playerOneType =
       document.querySelector('input[name="playerOne"]:checked') ||
@@ -99,3 +99,6 @@ newGameBtn.addEventListener('click', () => {
 
 // When the board is changed, re-render it
 PubSub.subscribe('boardChanged', displayController.render);
+
+// When a ship is sunk, announce it
+PubSub.subscribe('shipSunk', announce);

@@ -1,5 +1,5 @@
-import Ship from './Ship.js';
 import PubSub from './PubSub.js';
+import Ship from './Ship.js';
 
 class Gameboard {
   constructor(length) {
@@ -90,10 +90,10 @@ class Gameboard {
       target.hit();
       if (target.isSunk) {
         this.ships -= 1;
-        if (this.isGameOver()) {
-          PubSub.publish('gameOver', this.board);
-          return;
-        }
+        PubSub.publish(
+          'shipSunk',
+          `This ship of length ${target.length} has been sunk!`
+        );
       }
 
       return true;
