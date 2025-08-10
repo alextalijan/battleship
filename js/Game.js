@@ -1,5 +1,6 @@
 import announce from './announce.js';
 import PubSub from './PubSub.js';
+import Ship from './Ship.js';
 
 const Game = (function thatControlsGameplay() {
   const turns = [];
@@ -49,6 +50,17 @@ const Game = (function thatControlsGameplay() {
         }
       }, ms);
     });
+  }
+
+  // Keep track of smarter computer moves
+  const priorityComputerMoves = [];
+
+  function generateComputerMove() {
+    if (priorityComputerMoves.length > 0) {
+      return priorityComputerMoves.pop();
+    } else {
+      return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+    }
   }
 
   // Used for tracking if a move is from a previous game and should be ignored
@@ -125,7 +137,7 @@ const Game = (function thatControlsGameplay() {
         // Forget about it if the game has been reset
         const token = currentGameToken;
         await delay(1000, token);
-        move = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+        move = generateComputerMove();
       }
 
       // If the move hasn't already been made, make it
@@ -133,6 +145,81 @@ const Game = (function thatControlsGameplay() {
         // The first element of the turns array now is the player whose ship we're attacking
         turnPlayer.gameboard.guessingBoard[move[0]][move[1]] =
           turns[0].gameboard.receiveAttack(move);
+
+        // If computer made a hit, add adjacent fields to smarterComputerMoves queue
+        if (
+          turnPlayer.type === 'computer' &&
+          turnPlayer.gameboard.guessingBoard[move[0]][move[1]] instanceof Ship
+        ) {
+          let adjacentMoves;
+
+          // If the direction of the ship has been determined, ignore the priority moves going other direction
+          if (
+            turnPlayer.gameboard.guessingBoard[move[0] - 1][move[1]] instanceof
+              Ship ||
+            turnPlayer.gameboard.guessingBoard[move[0] + 1][move[1]] instanceof
+              Ship
+          ) {
+            adjacentMoves = [
+              [move[0] - 1, move[1]],
+              [move[0] + 1, move[1]],
+            ];
+
+            // Clear the priority moves of spots in vertical direction
+            for (let i = priorityComputerMoves.length - 1; i >= 0; i -= 1) {
+              // If the column of the move is not the same as the last added move, delete it
+              if (priorityComputerMoves[i][1] !== adjacentMoves[0][1]) {
+                priorityComputerMoves.splice(i, 1);
+              }
+            }
+          } else if (
+            turnPlayer.gameboard.guessingBoard[move[0]][move[1] - 1] instanceof
+              Ship ||
+            turnPlayer.gameboard.guessingBoard[move[0]][move[1] + 1] instanceof
+              Ship
+          ) {
+            adjacentMoves = [
+              [move[0], move[1] - 1],
+              [move[0], move[1] + 1],
+            ];
+
+            // Clear the priority moves of spots in vertical direction
+            for (let i = priorityComputerMoves.length - 1; i >= 0; i -= 1) {
+              // If the row of the move is not the same as the last added move, delete it
+              if (priorityComputerMoves[i][0] !== adjacentMoves[0][0]) {
+                priorityComputerMoves.splice(i, 1);
+              }
+            }
+          } else {
+            // Add adjacent moves to the queue
+            adjacentMoves = [
+              [move[0] - 1, move[1]],
+              [move[0], move[1] + 1],
+              [move[0] + 1, move[1]],
+              [move[0], move[1] - 1],
+            ];
+          }
+
+          // Loop through moves and remove ones that are out of bounds
+          for (let i = adjacentMoves.length - 1; i >= 0; i -= 1) {
+            if (
+              adjacentMoves[i][0] < 0 ||
+              adjacentMoves[i][0] > 9 ||
+              adjacentMoves[i][1] < 0 ||
+              adjacentMoves[i][1] > 9
+            ) {
+              adjacentMoves.splice(i, 1);
+            }
+          }
+
+          // Add valid moves to the priority queue
+          priorityComputerMoves.push(...adjacentMoves);
+
+          // If the ship has been sunk, clear the queue of priority moves
+          if (turnPlayer.gameboard.guessingBoard[move[0]][move[1]].isSunk) {
+            priorityComputerMoves.length = 0;
+          }
+        }
 
         // Add the delay once more
         PubSub.publish('boardChanged', turnPlayer.gameboard.guessingBoard);
